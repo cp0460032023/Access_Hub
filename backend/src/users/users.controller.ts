@@ -29,8 +29,9 @@ export class UsersController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
     @Query('search') search: string = '',
+    @Query('role') role?: string,
   ) {
-    return this.usersService.findAll(page, limit, search);
+    return this.usersService.findAll(page, limit, search, role);
   }
 
   @Get(':id')

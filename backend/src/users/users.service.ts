@@ -56,7 +56,7 @@ async createUser(createUserDto: CreateUserDto): Promise<User> {
     return this.usersRepository.save(user);
   }
 
-  async findAll(page: number, limit: number, search: string) {
+  async findAll(page: number, limit: number, search: string, role?: string) {
     const query = this.usersRepository.createQueryBuilder('user');
 
     if (search) {
@@ -64,6 +64,10 @@ async createUser(createUserDto: CreateUserDto): Promise<User> {
         'user.name ILIKE :search OR user.email ILIKE :search',
         { search: `%${search}%` },
       );
+    }
+
+    if (role) {
+      query.andWhere('user.role = :role', { role });
     }
 
     const total = await query.getCount();
