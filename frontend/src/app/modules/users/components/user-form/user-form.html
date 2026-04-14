@@ -1,0 +1,80 @@
+<div class="form-container">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <button class="btn-back" (click)="goBack()">← Volver</button>
+      <h2>{{ isEditMode ? 'Editar Usuario' : 'Nuevo Usuario' }}</h2>
+    </div>
+  </nav>
+
+  <div class="content">
+    <div class="form-card">
+      <h3>{{ isEditMode ? 'Actualizar datos del usuario' : 'Crear nuevo usuario' }}</h3>
+
+      <div class="success-alert" *ngIf="successMessage">
+        ✓ {{ successMessage }}
+      </div>
+
+      <div class="error-alert" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label>Nombre completo</label>
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Nombre completo"
+            [class.error]="userForm.get('name')?.invalid && userForm.get('name')?.touched"
+          />
+          <span class="error-msg" *ngIf="userForm.get('name')?.invalid && userForm.get('name')?.touched">
+            El nombre debe tener mínimo 3 caracteres
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="correo@ejemplo.com"
+            [class.error]="userForm.get('email')?.invalid && userForm.get('email')?.touched"
+          />
+          <span class="error-msg" *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+            Ingresa un correo válido
+          </span>
+        </div>
+
+        <div class="form-group" *ngIf="!isEditMode">
+          <label>Contraseña</label>
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="Mínimo 8 caracteres"
+            [class.error]="userForm.get('password')?.invalid && userForm.get('password')?.touched"
+          />
+          <span class="error-msg" *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+            La contraseña debe tener mínimo 8 caracteres
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Rol</label>
+          <select formControlName="role">
+            <option value="viewer">Viewer</option>
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="goBack()">Cancelar</button>
+          <button type="submit" class="btn-submit" [disabled]="userForm.invalid || isLoading">
+            {{ isLoading ? 'Guardando...' : isEditMode ? 'Actualizar' : 'Crear usuario' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

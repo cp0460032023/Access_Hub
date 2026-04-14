@@ -1,0 +1,228 @@
+.users-container {
+  min-height: 100vh;
+  background: #f0f4f8;
+}
+
+.navbar {
+  background: #1B4F8A;
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    h2 {
+      color: white;
+      margin: 0;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.btn-back {
+  background: transparent;
+  border: 1.5px solid white;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+
+  &:hover {
+    background: white;
+    color: #1B4F8A;
+  }
+}
+
+.user-role {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.admin { background: #e53e3e; color: white; }
+  &.editor { background: #d69e2e; color: white; }
+  &.viewer { background: #805ad5; color: white; }
+}
+
+.content {
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.error-alert {
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  color: #c53030;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 16px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+
+  &:focus {
+    outline: none;
+    border-color: #2E75B6;
+  }
+}
+
+.role-filter {
+  padding: 10px 16px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: white;
+  cursor: pointer;
+}
+
+.btn-create {
+  padding: 10px 20px;
+  background: #1B8A4F;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background: #166040;
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.table-wrapper {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+      background: #1B4F8A;
+      color: white;
+      padding: 14px 16px;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #f8fafc;
+    }
+  }
+}
+
+.role-badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.admin { background: #fff5f5; color: #e53e3e; }
+  &.editor { background: #fffbeb; color: #d69e2e; }
+  &.viewer { background: #faf5ff; color: #805ad5; }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit {
+  padding: 6px 14px;
+  background: #2E75B6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+
+  &:hover { background: #1B4F8A; }
+}
+
+.btn-delete {
+  padding: 6px 14px;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+
+  &:hover { background: #c53030; }
+}
+
+.empty {
+  text-align: center;
+  padding: 60px;
+  color: #888;
+  background: white;
+  border-radius: 12px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+
+  button {
+    padding: 8px 16px;
+    background: #1B4F8A;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:disabled {
+      background: #a0aec0;
+      cursor: not-allowed;
+    }
+  }
+
+  span {
+    color: #555;
+    font-size: 0.9rem;
+  }
+}
