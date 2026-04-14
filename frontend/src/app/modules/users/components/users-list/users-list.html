@@ -1,0 +1,93 @@
+<div class="users-container">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <button class="btn-back" (click)="goBack()">← Volver</button>
+      <h2>Gestión de Usuarios</h2>
+    </div>
+    <div class="nav-user">
+      <span class="user-role" [ngClass]="role">{{ role | uppercase }}</span>
+    </div>
+  </nav>
+
+  <div class="content">
+    <!-- Error -->
+    <div class="error-alert" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <input
+        type="text"
+        [(ngModel)]="search"
+        (input)="onSearch()"
+        placeholder="Buscar por nombre o email..."
+        class="search-input"
+      />
+      <select [(ngModel)]="selectedRole" (change)="onRoleFilter()" class="role-filter">
+        <option value="">Todos los roles</option>
+        <option value="admin">Admin</option>
+        <option value="editor">Editor</option>
+        <option value="viewer">Viewer</option>
+      </select>
+      <button
+        *ngIf="isAdmin()"
+        class="btn-create"
+        routerLink="/users/new">
+        + Nuevo usuario
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" *ngIf="isLoading">Cargando usuarios...</div>
+
+    <!-- Table -->
+    <div class="table-wrapper" *ngIf="!isLoading && users.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Fecha de creación</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="role-badge" [ngClass]="user.role">
+                {{ user.role | uppercase }}
+              </span>
+            </td>
+            <td>{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
+            <td class="actions">
+              <button class="btn-edit" (click)="editUser(user.id)">Editar</button>
+              <button
+                *ngIf="isAdmin()"
+                class="btn-delete"
+                (click)="deleteUser(user.id)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty -->
+    <div class="empty" *ngIf="!isLoading && users.length === 0 && !errorMessage">
+      No se encontraron usuarios.
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="total > limit">
+      <button (click)="prevPage()" [disabled]="page === 1">← Anterior</button>
+      <span>Página {{ page }} de {{ Math.ceil(total / limit) }}</span>
+      <button (click)="nextPage()" [disabled]="page * limit >= total">Siguiente →</button>
+    </div>
+  </div>
+</div>
