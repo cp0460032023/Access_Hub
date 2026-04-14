@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth-guard';
-import { roleGuard } from './core/guards/role-guard';
 
 export const routes: Routes = [
   {
@@ -25,8 +24,7 @@ export const routes: Routes = [
   },
   {
     path: 'users',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'editor'] },
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./modules/users/components/users-list/users-list').then(
         (m) => m.UsersListComponent
@@ -34,8 +32,7 @@ export const routes: Routes = [
   },
   {
     path: 'users/new',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin'] },
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./modules/users/components/user-form/user-form').then(
         (m) => m.UserFormComponent
@@ -43,8 +40,7 @@ export const routes: Routes = [
   },
   {
     path: 'users/edit/:id',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['admin', 'editor'] },
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./modules/users/components/user-form/user-form').then(
         (m) => m.UserFormComponent
