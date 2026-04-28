@@ -1,0 +1,19 @@
+{
+  "name": "backend-express",
+  "version": "1.0.0",
+  "description": "Backend Express para Access Hub - Sistema de Gestión de Usuarios",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.20.0"
+  }
+}
