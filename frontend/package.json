@@ -20,6 +20,8 @@
     "@angular/material": "^21.2.6",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "@ng-icons/core": "^33.2.2",
+    "@ng-icons/heroicons": "^33.2.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },

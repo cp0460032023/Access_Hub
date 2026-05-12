@@ -1,5 +1,4 @@
 <div class="form-container">
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="nav-brand">
       <button class="btn-back" (click)="goBack()">← Volver</button>
@@ -12,7 +11,7 @@
       <h3>{{ isEditMode ? 'Actualizar datos del usuario' : 'Crear nuevo usuario' }}</h3>
 
       <div class="success-alert" *ngIf="successMessage">
-        ✓ {{ successMessage }}
+        {{ successMessage }}
       </div>
 
       <div class="error-alert" *ngIf="errorMessage">
@@ -59,7 +58,8 @@
           </span>
         </div>
 
-        <div class="form-group">
+        <!-- Solo admin puede ver y cambiar el rol -->
+        <div class="form-group" *ngIf="isAdmin()">
           <label>Rol</label>
           <select formControlName="role">
             <option value="viewer">Viewer</option>

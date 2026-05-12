@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { UsersService } from '../../../../core/services/users';
+import { AuthService } from '../../../../core/services/auth';
 
 @Component({
   selector: 'app-user-form',
@@ -23,7 +24,8 @@ export class UserFormComponent implements OnInit {
     private fb: FormBuilder,
     private usersService: UsersService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {
     this.userForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
@@ -73,32 +75,44 @@ export class UserFormComponent implements OnInit {
       const updateData: any = {
         name: formValue.name,
         email: formValue.email,
-        role: formValue.role,
       };
+
+      if (this.isAdmin()) {
+        updateData.role = formValue.role;
+      }
+
       this.usersService.updateUser(this.userId, updateData).subscribe({
         next: () => {
-          this.successMessage = 'Usuario actualizado exitosamente';
-          this.isLoading = false;
-          setTimeout(() => this.router.navigate(['/users']), 1500);
+          setTimeout(() => {
+            this.router.navigate(['/users'], { state: { message: 'Usuario actualizado exitosamente' } });
+          }, 0);
         },
-        error: () => {
-          this.errorMessage = 'Error al actualizar usuario';
-          this.isLoading = false;
+        error: (err) => {
+          setTimeout(() => {
+            this.errorMessage = err.error?.message || 'Error al actualizar usuario';
+            this.isLoading = false;
+          }, 0);
         },
       });
     } else {
       this.usersService.createUser(formValue).subscribe({
         next: () => {
-          this.successMessage = 'Usuario creado exitosamente';
-          this.isLoading = false;
-          setTimeout(() => this.router.navigate(['/users']), 1500);
+          setTimeout(() => {
+            this.router.navigate(['/users'], { state: { message: 'Usuario creado exitosamente' } });
+          }, 0);
         },
         error: (err) => {
-          this.errorMessage = err.error?.message || 'Error al crear usuario';
-          this.isLoading = false;
+          setTimeout(() => {
+            this.errorMessage = err.error?.message || 'Error al crear usuario';
+            this.isLoading = false;
+          }, 0);
         },
       });
     }
+  }
+
+  isAdmin(): boolean {
+    return this.authService.getRole() === 'admin';
   }
 
   goBack(): void {
