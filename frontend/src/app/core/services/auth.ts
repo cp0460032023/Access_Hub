@@ -29,7 +29,7 @@ export interface AuthResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3001';
+  private apiUrl = 'https://access-hub-backend-neyi.onrender.com';
 
   constructor(private http: HttpClient, private router: Router) {}
 

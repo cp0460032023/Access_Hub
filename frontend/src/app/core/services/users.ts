@@ -34,7 +34,7 @@ export interface UpdateUserDto {
   providedIn: 'root',
 })
 export class UsersService {
-  private apiUrl = 'http://localhost:3001';
+  private apiUrl = 'https://access-hub-backend-neyi.onrender.com';
 
   constructor(private http: HttpClient) {}
 
