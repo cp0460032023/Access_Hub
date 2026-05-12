@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ import { AuthService } from '../../../../core/services/auth';
   styleUrl: './users-list.scss',
 })
 export class UsersListComponent implements OnInit {
-  Math = Math; // Para usar funciones matemáticas en el template
+  Math = Math;
   users: User[] = [];
   total: number = 0;
   page: number = 1;
@@ -23,60 +23,55 @@ export class UsersListComponent implements OnInit {
   isLoading: boolean = false;
   role: string = '';
   errorMessage: string = '';
+  successMessage: string = '';
 
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.role = this.authService.getRole();
+    const nav = window.history.state;
+    if (nav?.message) {
+      setTimeout(() => {
+        this.successMessage = nav.message;
+        this.cdr.detectChanges();
+        setTimeout(() => { this.successMessage = ''; this.cdr.detectChanges(); }, 3000);
+      }, 0);
+    }
     this.loadUsers();
   }
 
   loadUsers(): void {
     this.isLoading = true;
+    this.errorMessage = '';
     this.usersService.getUsers(this.page, this.limit, this.search, this.selectedRole).subscribe({
       next: (response: any) => {
-        if (response.statusCode === 403) {
-          this.errorMessage = response.message;
-          this.isLoading = false;
-          return;
-        }
         this.users = response.data || [];
         this.total = response.total || 0;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: () => {
         this.errorMessage = 'Error al cargar usuarios';
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
     });
   }
 
-  onSearch(): void {
-    this.page = 1;
-    this.loadUsers();
-  }
-
-  onRoleFilter(): void {
-    this.page = 1;
-    this.loadUsers();
-  }
+  onSearch(): void { this.page = 1; this.loadUsers(); }
+  onRoleFilter(): void { this.page = 1; this.loadUsers(); }
 
   nextPage(): void {
-    if (this.page * this.limit < this.total) {
-      this.page++;
-      this.loadUsers();
-    }
+    if (this.page * this.limit < this.total) { this.page++; this.loadUsers(); }
   }
 
   prevPage(): void {
-    if (this.page > 1) {
-      this.page--;
-      this.loadUsers();
-    }
+    if (this.page > 1) { this.page--; this.loadUsers(); }
   }
 
   editUser(id: string): void {
@@ -86,21 +81,25 @@ export class UsersListComponent implements OnInit {
   deleteUser(id: string): void {
     if (confirm('¿Estás seguro de eliminar este usuario?')) {
       this.usersService.deleteUser(id).subscribe({
-        next: () => this.loadUsers(),
-        error: () => alert('Error al eliminar usuario'),
+        next: () => {
+          setTimeout(() => {
+            this.successMessage = 'Usuario eliminado exitosamente';
+            this.cdr.detectChanges();
+            setTimeout(() => { this.successMessage = ''; this.cdr.detectChanges(); }, 3000);
+            this.loadUsers();
+          }, 0);
+        },
+        error: () => {
+          setTimeout(() => {
+            this.errorMessage = 'Error al eliminar usuario';
+            this.cdr.detectChanges();
+          }, 0);
+        },
       });
     }
   }
 
-  goBack(): void {
-    this.router.navigate(['/dashboard']);
-  }
-
-  isAdmin(): boolean {
-    return this.role === 'admin';
-  }
-
-  isEditor(): boolean {
-    return this.role === 'editor';
-  }
+  goBack(): void { this.router.navigate(['/dashboard']); }
+  isAdmin(): boolean { return this.role === 'admin'; }
+  isEditor(): boolean { return this.role === 'editor'; }
 }

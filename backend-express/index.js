@@ -5,6 +5,7 @@ require('dotenv').config();
 const usuariosRouter = require('./routes/usuarios');
 const rolesRouter = require('./routes/roles');
 const authRouter = require('./routes/auth');
+const usersRouter = require('./routes/users');
 const verifyToken = require('./middlewares/auth');
 
 const app = express();
@@ -16,7 +17,10 @@ app.use(express.json());
 // Rutas públicas
 app.use('/auth', authRouter);
 
-// Rutas protegidas
+// Rutas protegidas — usadas por el frontend Angular
+app.use('/users', verifyToken, usersRouter);
+
+// Rutas legacy (sprint anterior)
 app.use('/usuarios', verifyToken, usuariosRouter);
 app.use('/roles', verifyToken, rolesRouter);
 
@@ -24,16 +28,20 @@ app.use('/roles', verifyToken, rolesRouter);
 app.get('/', (req, res) => {
   res.json({
     message: 'Access Hub API - Backend Express',
-    version: '2.0.0',
+    version: '3.0.0',
     endpoints: {
       publicos: [
         'POST /auth/register',
         'POST /auth/login',
       ],
       protegidos: [
-        'GET /usuarios        (requiere token)',
-        'GET /usuarios/:id    (requiere token)',
-        'GET /roles           (requiere token)',
+        'GET    /users              (lista con paginación, búsqueda y filtro)',
+        'GET    /users/:id',
+        'POST   /users',
+        'PATCH  /users/:id',
+        'PATCH  /users/:id/password',
+        'DELETE /users/:id',
+        'GET    /roles',
       ]
     }
   });

@@ -1,5 +1,4 @@
 <div class="profile-container">
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="nav-brand">
       <button class="btn-back" (click)="goToDashboard()">← Volver</button>
@@ -13,6 +12,7 @@
         <span>{{ user?.name?.charAt(0) | uppercase }}</span>
       </div>
       <h3>{{ user?.name }}</h3>
+      <p class="user-email">{{ user?.email }}</p>
       <span class="role-badge" [ngClass]="user?.role">{{ user?.role | uppercase }}</span>
     </div>
 
@@ -20,7 +20,7 @@
       <h3>Editar información</h3>
 
       <div class="success-alert" *ngIf="successMessage">
-        ✓ {{ successMessage }}
+        {{ successMessage }}
       </div>
 
       <div class="error-alert" *ngIf="errorMessage">
@@ -54,7 +54,11 @@
 
         <div class="form-actions">
           <button type="button" class="btn-password" (click)="goToChangePassword()">
-            🔒 Cambiar contraseña
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Cambiar contraseña
           </button>
           <button type="submit" class="btn-submit" [disabled]="profileForm.invalid || isLoading">
             {{ isLoading ? 'Guardando...' : 'Guardar cambios' }}
