@@ -11,8 +11,8 @@ import { JwtStrategy } from './jwt.strategy';
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: 'access_hub_secret_key_2024',
-      signOptions: { expiresIn: '24h' },
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN || '24h' },
     }),
   ],
   controllers: [AuthController],

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface LoginDto {
   email: string;
@@ -29,7 +30,7 @@ export interface AuthResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'https://access-hub-backend-neyi.onrender.com';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private router: Router) {}
 

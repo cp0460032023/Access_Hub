@@ -9,16 +9,13 @@ import {
   UseGuards,
   Query,
   Request,
+  ForbiddenException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PoliciesGuard } from '../casl/policies.guard';
-import { CheckPolicies } from '../casl/check-policies.decorator';
-import { Action } from '../casl/casl-ability.factory';
-import { Reflector } from '@nestjs/core';
-import { CaslAbilityFactory } from '../casl/casl-ability.factory';
+import { Action, CaslAbilityFactory } from '../casl/casl-ability.factory';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'))
@@ -32,7 +29,7 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto, @Request() req) {
     const ability = this.caslAbilityFactory.createForUser(req.user);
     if (!ability.can(Action.Create, 'User')) {
-      return { message: 'No tienes permisos para crear usuarios', statusCode: 403 };
+      throw new ForbiddenException('No tienes permisos para crear usuarios');
     }
     return this.usersService.createUser(createUserDto);
   }
@@ -47,7 +44,7 @@ export class UsersController {
   ) {
     const ability = this.caslAbilityFactory.createForUser(req.user);
     if (!ability.can(Action.Read, 'User')) {
-      return { message: 'No tienes permisos para ver usuarios', statusCode: 403 };
+      throw new ForbiddenException('No tienes permisos para ver usuarios');
     }
     return this.usersService.findAll(+page, +limit, search, role);
   }
@@ -56,7 +53,7 @@ export class UsersController {
   findOne(@Param('id') id: string, @Request() req) {
     const ability = this.caslAbilityFactory.createForUser(req.user);
     if (!ability.can(Action.Read, 'User')) {
-      return { message: 'No tienes permisos para ver este usuario', statusCode: 403 };
+      throw new ForbiddenException('No tienes permisos para ver este usuario');
     }
     return this.usersService.findById(id);
   }
@@ -65,16 +62,25 @@ export class UsersController {
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Request() req) {
     const ability = this.caslAbilityFactory.createForUser(req.user);
     if (!ability.can(Action.Update, 'User')) {
-      return { message: 'No tienes permisos para editar usuarios', statusCode: 403 };
+      throw new ForbiddenException('No tienes permisos para editar usuarios');
     }
     return this.usersService.updateUser(id, updateUserDto);
+  }
+
+  @Patch(':id/password')
+  changePassword(
+    @Param('id') id: string,
+    @Body() body: { currentPassword: string; newPassword: string },
+    @Request() req,
+  ) {
+    return this.usersService.changePassword(id, body.currentPassword, body.newPassword);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
     const ability = this.caslAbilityFactory.createForUser(req.user);
     if (!ability.can(Action.Delete, 'User')) {
-      return { message: 'No tienes permisos para eliminar usuarios', statusCode: 403 };
+      throw new ForbiddenException('No tienes permisos para eliminar usuarios');
     }
     return this.usersService.removeUser(id);
   }

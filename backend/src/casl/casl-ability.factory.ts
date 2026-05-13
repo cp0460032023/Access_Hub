@@ -30,9 +30,9 @@ export class CaslAbilityFactory {
     } else if (user.role === Role.VIEWER) {
       can(Action.Read, 'Profile');
       can(Action.Update, 'Profile');
-      can(Action.Update, 'User');
       cannot(Action.Read, 'User');
       cannot(Action.Create, 'User');
+      cannot(Action.Update, 'User');
       cannot(Action.Delete, 'User');
     }
 

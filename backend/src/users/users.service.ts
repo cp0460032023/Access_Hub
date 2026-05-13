@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -123,5 +123,26 @@ async createUser(createUserDto: CreateUserDto): Promise<User> {
 
     await this.usersRepository.softDelete(id);
     return { message: 'Usuario eliminado exitosamente' };
+  }
+
+  async changePassword(
+    id: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    const user = await this.usersRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isValid) {
+      throw new UnauthorizedException('La contraseña actual es incorrecta');
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await this.usersRepository.save(user);
+    return { message: 'Contraseña actualizada exitosamente' };
   }
 }
