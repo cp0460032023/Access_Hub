@@ -1,0 +1,116 @@
+<div class="dashboard-container">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="brand-dot"></span>
+      <h2>Access Hub</h2>
+    </div>
+    <div class="nav-user">
+      <span class="user-name">{{ user?.name }}</span>
+      <span class="user-role" [ngClass]="role">{{ role | uppercase }}</span>
+      <button class="btn-logout" (click)="logout()">Cerrar sesión</button>
+    </div>
+  </nav>
+
+  <div class="dashboard-content">
+    <div class="welcome-section">
+      <h1>Bienvenido, <span class="name-highlight">{{ user?.name }}</span></h1>
+      <p>Conectado como <strong>{{ role }}</strong></p>
+    </div>
+
+    <!-- Admin -->
+    <div class="cards-grid" *ngIf="role === 'admin'">
+      <div class="card" (click)="goToUsers()">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3>Gestión de Usuarios</h3>
+          <p>Crear, editar y eliminar usuarios</p>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+
+      <div class="card" (click)="goToProfile()">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3>Mi Perfil</h3>
+          <p>Ver y editar tu información</p>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+
+      <div class="card disabled">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3>Historial</h3>
+          <p>Próximamente disponible</p>
+        </div>
+        <span class="card-arrow">—</span>
+      </div>
+    </div>
+
+    <!-- Editor -->
+    <div class="cards-grid" *ngIf="role === 'editor'">
+      <div class="card" (click)="goToUsers()">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3>Usuarios</h3>
+          <p>Ver y editar usuarios del sistema</p>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+
+      <div class="card" (click)="goToProfile()">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3>Mi Perfil</h3>
+          <p>Ver y editar tu información</p>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+
+    <!-- Viewer -->
+    <div class="cards-grid" *ngIf="role === 'viewer'">
+      <div class="card" (click)="goToProfile()">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <h3>Mi Perfil</h3>
+          <p>Ver y editar tu información personal</p>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+  </div>
+</div>

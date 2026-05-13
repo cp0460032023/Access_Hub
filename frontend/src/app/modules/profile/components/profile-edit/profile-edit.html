@@ -1,0 +1,70 @@
+<div class="profile-container">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <button class="btn-back" (click)="goToDashboard()">← Volver</button>
+      <h2>Mi Perfil</h2>
+    </div>
+  </nav>
+
+  <div class="content">
+    <div class="profile-card">
+      <div class="avatar">
+        <span>{{ user?.name?.charAt(0) | uppercase }}</span>
+      </div>
+      <h3>{{ user?.name }}</h3>
+      <p class="user-email">{{ user?.email }}</p>
+      <span class="role-badge" [ngClass]="user?.role">{{ user?.role | uppercase }}</span>
+    </div>
+
+    <div class="form-card">
+      <h3>Editar información</h3>
+
+      <div class="success-alert" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+
+      <div class="error-alert" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label>Nombre completo</label>
+          <input
+            type="text"
+            formControlName="name"
+            [class.error]="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
+          />
+          <span class="error-msg" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+            El nombre debe tener mínimo 3 caracteres
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input
+            type="email"
+            formControlName="email"
+            [class.error]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+          />
+          <span class="error-msg" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+            Ingresa un correo válido
+          </span>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-password" (click)="goToChangePassword()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Cambiar contraseña
+          </button>
+          <button type="submit" class="btn-submit" [disabled]="profileForm.invalid || isLoading">
+            {{ isLoading ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
