@@ -1,0 +1,51 @@
+databases:
+  - name: access-hub-db
+    databaseName: access_hub
+    user: postgres
+    plan: free
+
+services:
+  - type: web
+    name: access-hub-backend-neyi
+    env: docker
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: access-hub-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: access-hub-db
+          property: port
+      - key: DB_USERNAME
+        fromDatabase:
+          name: access-hub-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: access-hub-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: access-hub-db
+          property: database
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: PORT
+        value: "3000"
+
+  - type: web
+    name: access-hub-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist/frontend/browser
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
