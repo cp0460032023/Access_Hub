@@ -4,7 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { CaslModule } from './casl/casl.module';
+import { AuditModule } from './audit/audit.module';
 import { User } from './users/entities/user.entity';
+import { AuditLog } from './audit/entities/audit-log.entity';
 
 @Module({
   imports: [
@@ -18,12 +20,13 @@ import { User } from './users/entities/user.entity';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User],
+      entities: [User, AuditLog],
       synchronize: process.env.NODE_ENV !== 'production',
     }),
     AuthModule,
     UsersModule,
     CaslModule,
+    AuditModule,
   ],
 })
 export class AppModule {}

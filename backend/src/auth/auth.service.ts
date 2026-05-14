@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import { AuditService } from '../audit/audit.service';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -8,12 +9,19 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private auditService: AuditService,
   ) {}
 
   async register(name: string, email: string, password: string) {
     const user = await this.usersService.create(name, email, password);
 
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    await this.auditService.log('register', 'user', user.id, {
+      id: user.id,
+      name: user.name,
+      role: user.role,
+    });
+
+    const payload = { sub: user.id, email: user.email, role: user.role, name: user.name };
     const token = this.jwtService.sign(payload);
 
     return {
@@ -41,7 +49,13 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales incorrectas');
     }
 
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    await this.auditService.log('login', 'user', user.id, {
+      id: user.id,
+      name: user.name,
+      role: user.role,
+    });
+
+    const payload = { sub: user.id, email: user.email, role: user.role, name: user.name };
     const token = this.jwtService.sign(payload);
 
     return {
@@ -62,4 +76,3 @@ export class AuthService {
     };
   }
 }
-

@@ -67,6 +67,15 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'history',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['admin'] },
+    loadComponent: () =>
+      import('./modules/history/components/history-list/history-list').then(
+        (m) => m.HistoryListComponent
+      ),
+  },
+  {
     path: '**',
     redirectTo: 'login',
   },

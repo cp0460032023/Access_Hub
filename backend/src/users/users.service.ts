@@ -5,12 +5,14 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuditService, AuditActor } from '../audit/audit.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private auditService: AuditService,
   ) {}
 
   async create(name: string, email: string, password: string): Promise<User> {
@@ -37,7 +39,7 @@ export class UsersService {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto, actor?: AuditActor): Promise<User> {
     const existingUser = await this.usersRepository.findOne({
       where: { email: createUserDto.email },
     });
@@ -53,7 +55,14 @@ async createUser(createUserDto: CreateUserDto): Promise<User> {
       password: hashedPassword,
     });
 
-    return this.usersRepository.save(user);
+    const saved = await this.usersRepository.save(user);
+
+    await this.auditService.log('user_created', 'user', saved.id, actor ?? null, {
+      email: saved.email,
+      role: saved.role,
+    });
+
+    return saved;
   }
 
   async findAll(page: number, limit: number, search: string, role?: string) {
@@ -94,8 +103,7 @@ async createUser(createUserDto: CreateUserDto): Promise<User> {
     return this.usersRepository.findOne({ where: { id } });
   }
 
-
-  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async updateUser(id: string, updateUserDto: UpdateUserDto, actor?: AuditActor): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { id } });
 
     if (!user) {
@@ -112,9 +120,19 @@ async createUser(createUserDto: CreateUserDto): Promise<User> {
     }
 
     Object.assign(user, updateUserDto);
-    return this.usersRepository.save(user);
+    const saved = await this.usersRepository.save(user);
+
+    const changedFields = Object.keys(updateUserDto).filter(
+      (k) => k !== 'password',
+    );
+    await this.auditService.log('user_updated', 'user', id, actor ?? null, {
+      fields: changedFields,
+    });
+
+    return saved;
   }
-  async removeUser(id: string): Promise<{ message: string }> {
+
+  async removeUser(id: string, actor?: AuditActor): Promise<{ message: string }> {
     const user = await this.usersRepository.findOne({ where: { id } });
 
     if (!user) {
@@ -122,6 +140,11 @@ async createUser(createUserDto: CreateUserDto): Promise<User> {
     }
 
     await this.usersRepository.softDelete(id);
+
+    await this.auditService.log('user_deleted', 'user', id, actor ?? null, {
+      email: user.email,
+    });
+
     return { message: 'Usuario eliminado exitosamente' };
   }
 
@@ -129,6 +152,7 @@ async createUser(createUserDto: CreateUserDto): Promise<User> {
     id: string,
     currentPassword: string,
     newPassword: string,
+    actor?: AuditActor,
   ): Promise<{ message: string }> {
     const user = await this.usersRepository.findOne({ where: { id } });
 
@@ -143,6 +167,9 @@ async createUser(createUserDto: CreateUserDto): Promise<User> {
 
     user.password = await bcrypt.hash(newPassword, 10);
     await this.usersRepository.save(user);
+
+    await this.auditService.log('password_changed', 'user', id, actor ?? null);
+
     return { message: 'Contraseña actualizada exitosamente' };
   }
 }

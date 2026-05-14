@@ -35,4 +35,8 @@ export class DashboardComponent implements OnInit {
   goToProfile(): void {
     this.router.navigate(['/profile']);
   }
+
+  goToHistory(): void {
+    this.router.navigate(['/history']);
+  }
 }

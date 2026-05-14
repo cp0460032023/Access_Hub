@@ -31,7 +31,8 @@ export class UsersController {
     if (!ability.can(Action.Create, 'User')) {
       throw new ForbiddenException('No tienes permisos para crear usuarios');
     }
-    return this.usersService.createUser(createUserDto);
+    const actor = { id: req.user.id, name: req.user.name ?? req.user.email, role: req.user.role };
+    return this.usersService.createUser(createUserDto, actor);
   }
 
   @Get()
@@ -64,7 +65,8 @@ export class UsersController {
     if (!ability.can(Action.Update, 'User')) {
       throw new ForbiddenException('No tienes permisos para editar usuarios');
     }
-    return this.usersService.updateUser(id, updateUserDto);
+    const actor = { id: req.user.id, name: req.user.name ?? req.user.email, role: req.user.role };
+    return this.usersService.updateUser(id, updateUserDto, actor);
   }
 
   @Patch(':id/password')
@@ -73,7 +75,8 @@ export class UsersController {
     @Body() body: { currentPassword: string; newPassword: string },
     @Request() req,
   ) {
-    return this.usersService.changePassword(id, body.currentPassword, body.newPassword);
+    const actor = { id: req.user.id, name: req.user.name ?? req.user.email, role: req.user.role };
+    return this.usersService.changePassword(id, body.currentPassword, body.newPassword, actor);
   }
 
   @Delete(':id')
@@ -82,6 +85,7 @@ export class UsersController {
     if (!ability.can(Action.Delete, 'User')) {
       throw new ForbiddenException('No tienes permisos para eliminar usuarios');
     }
-    return this.usersService.removeUser(id);
+    const actor = { id: req.user.id, name: req.user.name ?? req.user.email, role: req.user.role };
+    return this.usersService.removeUser(id, actor);
   }
 }

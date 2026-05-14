@@ -1,0 +1,74 @@
+<div class="history-container">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <button class="btn-back" (click)="goBack()">← Volver</button>
+      <h2>Historial de actividad</h2>
+    </div>
+    <div class="nav-user">
+      <span class="user-role" [ngClass]="role">{{ role | uppercase }}</span>
+    </div>
+  </nav>
+
+  <div class="content">
+    <div class="error-alert" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <div class="filters">
+      <input
+        type="text"
+        [(ngModel)]="search"
+        (ngModelChange)="onSearch()"
+        placeholder="Buscar por usuario..."
+        class="search-input"
+      />
+      <select
+        [(ngModel)]="selectedAction"
+        (ngModelChange)="onActionFilter()"
+        class="action-filter"
+      >
+        <option *ngFor="let a of actions" [value]="a.value">{{ a.label }}</option>
+      </select>
+    </div>
+
+    <div class="loading" *ngIf="isLoading">Cargando historial...</div>
+
+    <div class="table-wrapper" *ngIf="!isLoading && logs.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Acción</th>
+            <th>Realizado por</th>
+            <th>Rol</th>
+            <th>Fecha y hora</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td>
+              <span class="action-badge" [ngClass]="log.action">
+                {{ actionLabel(log.action) }}
+              </span>
+            </td>
+            <td>{{ log.performedByName || '—' }}</td>
+            <td>
+              <span *ngIf="log.performedByRole" class="role-badge" [ngClass]="log.performedByRole">
+                {{ log.performedByRole | uppercase }}
+              </span>
+              <span *ngIf="!log.performedByRole">—</span>
+            </td>
+            <td>{{ log.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="empty" *ngIf="!isLoading && logs.length === 0 && !errorMessage">
+      No hay registros de actividad.
+    </div>
+
+    <div class="pagination" *ngIf="total > limit">
+      <button (click)="prevPage()" [disabled]="page === 1">← Anterior</button>
+      <span>Página {{ page }} de {{ Math.ceil(total / limit) }}</span>
+      <button (click)="nextPage()" [disabled]="page * limit >= total">Siguiente →</button>
+    </div>
+  </div>
+</div>
